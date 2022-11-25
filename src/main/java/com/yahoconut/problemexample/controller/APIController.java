@@ -4,7 +4,6 @@ import com.yahoconut.problemexample.exception.RandomException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
-import org.springframework.web.ErrorResponse;
 import org.springframework.web.ErrorResponseException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,13 +23,13 @@ public class APIController {
         }else if (greeting.isBlank()) {
             throw new IllegalArgumentException("EMPTY_STRING");
         } else if (greeting.length() > 5) {
-            final ProblemDetail problemDetail = ProblemDetail.forStatus(404);
+            final ProblemDetail problemDetail = ProblemDetail.forStatus(400);
             problemDetail.setTitle("Maximum request length exceeded");
             problemDetail.setType(URI.create("/some-specification-document"));
             problemDetail.setInstance(URI.create("/specific-document"));
             problemDetail.setDetail("5글자 이상은 에러를 내기위해 금지");
 
-            throw new ErrorResponseException(HttpStatusCode.valueOf(404), problemDetail, null);
+            throw new ErrorResponseException(HttpStatusCode.valueOf(400), problemDetail, null);
         }
 
         return greeting;
@@ -39,9 +38,9 @@ public class APIController {
     @ExceptionHandler(IllegalArgumentException.class)
     public ProblemDetail badRequestHandler(HttpServletRequest req, Exception ex) {
        return switch (ex.getMessage()) {
-           case "EMPTY_STRING" -> ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(404), "greeting is empty.");
+           case "EMPTY_STRING" -> ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(400), "greeting is empty.");
 
-           default -> ProblemDetail.forStatus(404);
+           default -> ProblemDetail.forStatus(400);
        };
     }
 }
