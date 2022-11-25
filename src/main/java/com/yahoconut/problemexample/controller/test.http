@@ -1,0 +1,13 @@
+
+GET http://localhost:8080/?greeting=hello
+
+###
+GET http://localhost:8080/?greeting=
+Accept: application/problem+json
+
+###
+GET http://localhost:8080/?greeting=helloworld
+Accept: application/problem+json
+
+
+
